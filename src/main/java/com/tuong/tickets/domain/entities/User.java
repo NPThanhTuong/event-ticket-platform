@@ -1,0 +1,61 @@
+package com.tuong.tickets.domain.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class User {
+
+	@Id
+	@Column(name = "id", updatable = false, nullable = false)
+	UUID id;
+
+	@Column(name = "name", nullable = false)
+	String name;
+
+	@Column(name = "email", nullable = false)
+	String email;
+
+	@OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL)
+	List<Event> organizedEvents = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(
+			name = "user_attending_events",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "event_id")
+	)
+	List<Event> attendingEvents = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(
+			name = "user_staffing_events",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "event_id")
+	)
+	List<Event> staffingEvents = new ArrayList<>();
+
+	@CreatedDate
+	@Column(name = "created_at", updatable = false, nullable = false)
+	LocalDateTime createdAt;
+
+	@LastModifiedDate
+	@Column(name = "updated_at", nullable = false)
+	LocalDateTime updatedAt;
+
+}
