@@ -1,5 +1,6 @@
 package com.tuong.tickets.domain.entities;
 
+import com.tuong.tickets.domain.enums.QrCodeStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,40 +8,33 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ticket_types")
+@Table(name = "qr_codes")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TicketType {
+public class QrCode {
 
 	@Id
 	@Column(name = "id", nullable = false, updatable = false)
 	@GeneratedValue(strategy = GenerationType.UUID)
 	UUID id;
 
-	@Column(name = "name", nullable = false)
-	String name;
+	@Column(name = "status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	QrCodeStatusEnum status;
 
-	@Column(name = "price", nullable = false)
-	Double price;
-
-	@Column(name = "total_available")
-	Integer totalAvailable;
+	@Column(name = "value", nullable = false)
+	String value;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "event_id")
-	Event event;
-
-	@OneToMany(mappedBy = "ticketType", cascade = CascadeType.ALL)
-	List<Ticket> tickets = new ArrayList<>();
+	@JoinColumn(name = "ticket_id")
+	Ticket ticket;
 
 	@CreatedDate
 	@Column(name = "created_at", updatable = false, nullable = false)
