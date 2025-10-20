@@ -56,5 +56,5 @@ public class QrCode {
 	public int hashCode() {
 		return Objects.hash(id, status, value, createdAt, updatedAt);
 	}
-	
+
 }

@@ -18,3 +18,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090/realms/event-ticket-platform
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+      keycloak: DEBUG

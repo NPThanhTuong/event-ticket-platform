@@ -9,6 +9,8 @@ import com.tuong.tickets.repositories.EventRepository;
 import com.tuong.tickets.repositories.UserRepository;
 import com.tuong.tickets.services.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,17 +30,6 @@ public class EventServiceImpl implements EventService {
 				.orElseThrow(() -> new UserNotFoundException(
 						String.format("User with ID '%s' not found", organizerId)));
 
-		List<TicketType> ticketTypesToCreate = eventRequest.getTicketTypes()
-				.stream().map(ticketTypeRequest -> {
-					TicketType ticketTypeToCreate = new TicketType();
-					ticketTypeRequest.setName(ticketTypeRequest.getName());
-					ticketTypeRequest.setDescription(ticketTypeRequest.getDescription());
-					ticketTypeRequest.setPrice(ticketTypeRequest.getPrice());
-					ticketTypeRequest.setTotalAvailable(ticketTypeRequest.getTotalAvailable());
-
-					return ticketTypeToCreate;
-				}).toList();
-
 		Event eventToCreate = new Event();
 		eventToCreate.setName(eventRequest.getName());
 		eventToCreate.setStart(eventRequest.getStart());
@@ -48,9 +39,37 @@ public class EventServiceImpl implements EventService {
 		eventToCreate.setSalesEnd(eventRequest.getSalesEnd());
 		eventToCreate.setStatus(eventRequest.getStatus());
 		eventToCreate.setOrganizer(organizer);
+
+		List<TicketType> ticketTypesToCreate = eventRequest.getTicketTypes()
+				.stream().map(ticketTypeRequest -> {
+					TicketType ticketTypeToCreate = new TicketType();
+					ticketTypeToCreate.setName(ticketTypeRequest.getName());
+					ticketTypeToCreate.setDescription(ticketTypeRequest.getDescription());
+					ticketTypeToCreate.setPrice(ticketTypeRequest.getPrice());
+					ticketTypeToCreate.setTotalAvailable(ticketTypeRequest.getTotalAvailable());
+					ticketTypeToCreate.setEvent(eventToCreate);
+
+					return ticketTypeToCreate;
+				}).toList();
+
 		eventToCreate.setTicketTypes(ticketTypesToCreate);
 
 		return eventRepository.save(eventToCreate);
 	}
+
+	@Override
+	public Page<Event> listEventsForOrganizer(UUID organizerId, Pageable pageable) {
+		return eventRepository.findByOrganizerId(organizerId, pageable);
+	}
+
+//	@Override
+//	public Optional<Event> getEventForOrganizer(UUID organizerId, UUID id) {
+//		return Optional.empty();
+//	}
+
+//	@Override
+//	public List<Event> getAllEvents() {
+//		return eventRepository.findAll();
+//	}
 
 }

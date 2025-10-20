@@ -31,10 +31,10 @@ public class Event {
 	@Column(name = "name", nullable = false)
 	String name;
 
-	@Column(name = "start")
+	@Column(name = "event_start")
 	LocalDateTime start;
 
-	@Column(name = "end")
+	@Column(name = "event_end")
 	LocalDateTime end;
 
 	@Column(name = "venue", nullable = false)
@@ -82,5 +82,5 @@ public class Event {
 	public int hashCode() {
 		return Objects.hash(id, name, start, end, venue, salesStart, salesEnd, status, createdAt, updatedAt);
 	}
-	
+
 }

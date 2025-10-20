@@ -1,4 +1,4 @@
-package com.tuong.tickets.domain.dtos;
+package com.tuong.tickets.domain.dtos.response;
 
 import com.tuong.tickets.domain.enums.EventStatusEnum;
 import lombok.AccessLevel;
@@ -10,13 +10,14 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateEventRequest {
-
+public class ListEventResponseDto {
+	UUID id;
 	String name;
 	LocalDateTime start;
 	LocalDateTime end;
@@ -24,6 +25,5 @@ public class CreateEventRequest {
 	LocalDateTime salesStart;
 	LocalDateTime salesEnd;
 	EventStatusEnum status;
-	List<CreateTicketTypeRequest> ticketTypes = new ArrayList<>();
-
+	List<ListEventTicketTypeResponseDto> ticketTypes = new ArrayList<>();
 }
