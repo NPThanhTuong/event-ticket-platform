@@ -1,10 +1,15 @@
 package com.tuong.tickets.controllers;
 
 import com.tuong.tickets.domain.dtos.CreateEventRequest;
+import com.tuong.tickets.domain.dtos.UpdateEventRequest;
 import com.tuong.tickets.domain.dtos.request.CreateEventRequestDto;
+import com.tuong.tickets.domain.dtos.request.UpdateEventRequestDto;
 import com.tuong.tickets.domain.dtos.response.CreateEventResponseDto;
+import com.tuong.tickets.domain.dtos.response.GetEventDetailsResponseDto;
 import com.tuong.tickets.domain.dtos.response.ListEventResponseDto;
+import com.tuong.tickets.domain.dtos.response.UpdateEventResponseDto;
 import com.tuong.tickets.domain.entities.Event;
+import com.tuong.tickets.exceptions.EventNotFoundException;
 import com.tuong.tickets.mappers.EventMapper;
 import com.tuong.tickets.services.EventService;
 import jakarta.validation.Valid;
@@ -51,6 +56,33 @@ public class EventController {
 		Page<Event> events = eventService.listEventsForOrganizer(organizerId, pageable);
 
 		return ResponseEntity.ok(events.map(eventMapper::toListEventResponseDto));
+	}
+
+	@GetMapping(path = "/{eventId}")
+	public ResponseEntity<GetEventDetailsResponseDto> getEventForOrganizer(
+			@AuthenticationPrincipal Jwt jwt,
+			@PathVariable UUID eventId
+	) {
+		UUID organizerId = parseUserId(jwt);
+
+		return eventService.getEventForOrganizerId(organizerId, eventId)
+				.map(eventMapper::toGetEventDetailsResponseDto)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
+	}
+
+	@PutMapping("/{eventId}")
+	public ResponseEntity<UpdateEventResponseDto> fullUpdateEvent(
+			@AuthenticationPrincipal Jwt jwt,
+			@PathVariable UUID eventId,
+			@Valid @RequestBody UpdateEventRequestDto updateEventRequestDto
+	) {
+		UUID organizerId = parseUserId(jwt);
+		UpdateEventRequest updateEventRequest = eventMapper.fromDto(updateEventRequestDto);
+		Event updatedEvent = eventService.updateEventForOrganizer(organizerId, eventId, updateEventRequest);
+		UpdateEventResponseDto updateEventResponseDto = eventMapper.toUpdateEventResponseDto(updatedEvent);
+
+		return ResponseEntity.ok(updateEventResponseDto);
 	}
 
 	private UUID parseUserId(Jwt jwt) {
