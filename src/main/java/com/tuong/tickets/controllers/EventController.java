@@ -14,6 +14,7 @@ import com.tuong.tickets.mappers.EventMapper;
 import com.tuong.tickets.services.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1/events")
 @RequiredArgsConstructor
+@Slf4j
 public class EventController {
 	private final EventMapper eventMapper;
 	private final EventService eventService;
@@ -85,7 +87,20 @@ public class EventController {
 		return ResponseEntity.ok(updateEventResponseDto);
 	}
 
+	@DeleteMapping("/{eventId}")
+	public ResponseEntity<Void> deleteEventForOrganizer(
+			@AuthenticationPrincipal Jwt jwt,
+			@PathVariable UUID eventId
+	) {
+		UUID organizerId = parseUserId(jwt);
+		eventService.deleteEventForOrganizer(organizerId, eventId);
+
+		return ResponseEntity.noContent().build();
+	}
+
 	private UUID parseUserId(Jwt jwt) {
+		log.info(jwt.getClaims().toString());
+		
 		return UUID.fromString(jwt.getSubject());
 	}
 }
