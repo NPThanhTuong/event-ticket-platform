@@ -18,7 +18,7 @@ public class SecurityConfig {
 		httpSecurity
 				.authorizeHttpRequests(authorize -> {
 					authorize
-							.requestMatchers(HttpMethod.GET, "/api/v1/published-events")
+							.requestMatchers(HttpMethod.GET, "/api/v1/published-events/**")
 							.permitAll()
 							// Catch all rules
 							.anyRequest().authenticated();

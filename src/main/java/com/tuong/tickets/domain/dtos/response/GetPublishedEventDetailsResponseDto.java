@@ -16,16 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GetEventDetailsResponseDto {
+public class GetPublishedEventDetailsResponseDto {
 	UUID id;
 	String name;
 	LocalDateTime start;
 	LocalDateTime end;
 	String venue;
-	LocalDateTime salesStart;
-	LocalDateTime salesEnd;
 	EventStatusEnum status;
-	List<GetEventTicketTypesResponseDto> ticketTypes = new ArrayList<>();
-	LocalDateTime createdAt;
-	LocalDateTime updatedAt;
+	List<GetPublishedEventTicketTypesResponseDto> ticketTypes = new ArrayList<>();
 }
