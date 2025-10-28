@@ -6,6 +6,7 @@ import com.tuong.tickets.domain.dtos.UpdateTicketTypeRequest;
 import com.tuong.tickets.domain.entities.Event;
 import com.tuong.tickets.domain.entities.TicketType;
 import com.tuong.tickets.domain.entities.User;
+import com.tuong.tickets.domain.enums.EventStatusEnum;
 import com.tuong.tickets.exceptions.EventNotFoundException;
 import com.tuong.tickets.exceptions.EventUpdateException;
 import com.tuong.tickets.exceptions.TicketTypeNotFoundException;
@@ -143,4 +144,15 @@ public class EventServiceImpl implements EventService {
 	public void deleteEventForOrganizer(UUID organizerId, UUID id) {
 		getEventForOrganizerId(organizerId, id).ifPresent(eventRepository::delete);
 	}
+
+	@Override
+	public Page<Event> listPublishedEvents(Pageable pageable) {
+		return eventRepository.findByStatus(EventStatusEnum.PUBLISHED, pageable);
+	}
+
+	@Override
+	public Page<Event> searchPublishedEvents(String query, Pageable pageable) {
+		return eventRepository.searchEvents(query, pageable);
+	}
+
 }

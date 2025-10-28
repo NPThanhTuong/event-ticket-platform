@@ -9,7 +9,6 @@ import com.tuong.tickets.domain.dtos.response.GetEventDetailsResponseDto;
 import com.tuong.tickets.domain.dtos.response.ListEventResponseDto;
 import com.tuong.tickets.domain.dtos.response.UpdateEventResponseDto;
 import com.tuong.tickets.domain.entities.Event;
-import com.tuong.tickets.exceptions.EventNotFoundException;
 import com.tuong.tickets.mappers.EventMapper;
 import com.tuong.tickets.services.EventService;
 import jakarta.validation.Valid;
@@ -23,7 +22,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -100,7 +98,7 @@ public class EventController {
 
 	private UUID parseUserId(Jwt jwt) {
 		log.info(jwt.getClaims().toString());
-		
+
 		return UUID.fromString(jwt.getSubject());
 	}
 }
