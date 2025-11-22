@@ -1,10 +1,7 @@
 package com.tuong.tickets.controllers;
 
 import com.tuong.tickets.domain.dtos.ErrorDto;
-import com.tuong.tickets.exceptions.EventNotFoundException;
-import com.tuong.tickets.exceptions.EventUpdateException;
-import com.tuong.tickets.exceptions.TicketTypeNotFoundException;
-import com.tuong.tickets.exceptions.UserNotFoundException;
+import com.tuong.tickets.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,6 +50,33 @@ public class GlobalExceptionHandler {
 		log.error("Caught EventUpdateException", e);
 		ErrorDto errorDto = new ErrorDto();
 		errorDto.setError("Unable to update event");
+
+		return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(QrCodeGenerationException.class)
+	public ResponseEntity<ErrorDto> handleQrCodeGenerationException(QrCodeGenerationException e) {
+		log.error("Caught QrCodeGenerationException", e);
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setError("Unable to generate QR code");
+
+		return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(QrCodeNotFoundException.class)
+	public ResponseEntity<ErrorDto> handleQrCodeNotFoundException(QrCodeNotFoundException e) {
+		log.error("Caught QrCodeNotFoundException", e);
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setError("QR code not found");
+
+		return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(TicketSoldOutException.class)
+	public ResponseEntity<ErrorDto> handleTicketSoldOutException(TicketSoldOutException e) {
+		log.error("Caught TicketSoldOutException", e);
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setError("Tickets are sold out for this ticket type");
 
 		return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
 	}

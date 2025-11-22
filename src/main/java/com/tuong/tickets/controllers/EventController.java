@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static com.tuong.tickets.utils.JwtUtils.parseUserId;
+
 @RestController
 @RequestMapping(path = "/api/v1/events")
 @RequiredArgsConstructor
@@ -96,9 +98,4 @@ public class EventController {
 		return ResponseEntity.noContent().build();
 	}
 
-	private UUID parseUserId(Jwt jwt) {
-		log.info(jwt.getClaims().toString());
-
-		return UUID.fromString(jwt.getSubject());
-	}
 }

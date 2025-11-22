@@ -23,14 +23,13 @@ public class QrCode {
 
 	@Id
 	@Column(name = "id", nullable = false, updatable = false)
-	@GeneratedValue(strategy = GenerationType.UUID)
 	UUID id;
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	QrCodeStatusEnum status;
 
-	@Column(name = "value", nullable = false)
+	@Column(name = "value", columnDefinition = "TEXT", nullable = false)
 	String value;
 
 	@ManyToOne(fetch = FetchType.LAZY)
