@@ -9,9 +9,11 @@ import com.tuong.tickets.domain.entities.QrCode;
 import com.tuong.tickets.domain.entities.Ticket;
 import com.tuong.tickets.domain.enums.QrCodeStatusEnum;
 import com.tuong.tickets.exceptions.QrCodeGenerationException;
+import com.tuong.tickets.exceptions.QrCodeNotFoundException;
 import com.tuong.tickets.repositories.QrCodeRepository;
 import com.tuong.tickets.services.QrCodeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -19,10 +21,12 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QrCodeServiceImpl implements QrCodeService {
 	private static final int QR_HEIGHT = 300;
 	private static final int QR_WIDTH = 300;
@@ -46,6 +50,19 @@ public class QrCodeServiceImpl implements QrCodeService {
 			qrCodeRepository.saveAndFlush(qrCode);
 		} catch (WriterException | IOException e) {
 			throw new QrCodeGenerationException("Failed to generate QR Code", e);
+		}
+	}
+
+	@Override
+	public byte[] getQrCodeImageForUserAndTicket(UUID userId, UUID ticketId) {
+		QrCode qrCode = qrCodeRepository
+				.findByTicketIdAndTicketPurchaserId(ticketId, userId)
+				.orElseThrow(QrCodeNotFoundException::new);
+		try {
+			return Base64.getDecoder().decode(qrCode.getValue());
+		} catch (IllegalArgumentException ex) {
+			log.error("Invalid base64 QR code for ticket ID: {}", ticketId, ex);
+			throw new QrCodeNotFoundException();
 		}
 	}
 

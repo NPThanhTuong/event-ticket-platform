@@ -81,6 +81,15 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(TicketNotFoundException.class)
+	public ResponseEntity<ErrorDto> handleTicketNotFoundException(TicketNotFoundException e) {
+		log.error("Caught TicketNotFoundException", e);
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setError("Ticket is not found");
+
+		return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorDto> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
 		log.error("Caught MethodArgumentNotValidException", e);
