@@ -33,7 +33,7 @@ public class TicketValidationController {
 					.validateTicketByManually(ticketValidationRequestDto.getId());
 		else
 			ticketValidation = ticketValidationService
-					.validateTicketBHyQrCode(ticketValidationRequestDto.getId());
+					.validateTicketByQrCode(ticketValidationRequestDto.getId());
 
 		return ResponseEntity.ok(
 				ticketValidationMapper.toTicketValidationResponseDto(ticketValidation));

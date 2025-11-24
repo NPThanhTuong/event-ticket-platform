@@ -26,7 +26,7 @@ public class TicketValidationServiceImpl implements TicketValidationService {
 	private final TicketRepository ticketRepository;
 
 	@Override
-	public TicketValidation validateTicketBHyQrCode(UUID qrCodeId) {
+	public TicketValidation validateTicketByQrCode(UUID qrCodeId) {
 		QrCode qrCode = qrCodeRepository.findByIdAndStatus(qrCodeId, QrCodeStatusEnum.ACTIVE)
 				.orElseThrow(() -> new QrCodeNotFoundException(
 						String.format("QR code with ID %s was not found", qrCodeId))
